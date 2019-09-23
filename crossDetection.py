@@ -11,14 +11,14 @@ colorSensorRight = ColorSensor(INPUT_1)
 colorIntensCenter = colorSensorCenter.reflected_light_intensity
 colorIntensRight = colorSensorRight.reflected_light_intensity
 
-lightValue = 10;
+lightValue = 10
 
 def crossDetected():
 
-    if(colorIntensRight<=lightValue && colorIntensCenter<=lightValue)
+    if(colorIntensRight<=lightValue and colorIntensCenter<=lightValue)
         retrunValue=1
     else:
-        retrunValue=0;
+        retrunValue=0
 
     return retrunValue
 
