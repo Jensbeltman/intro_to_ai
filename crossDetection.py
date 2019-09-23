@@ -15,7 +15,7 @@ lightValue = 10
 
 def crossDetected():
 
-    if(colorIntensRight<=lightValue and colorIntensCenter<=lightValue)
+    if((colorIntensRight<=lightValue) and (colorIntensCenter<=lightValue)):
         retrunValue=1
     else:
         retrunValue=0
