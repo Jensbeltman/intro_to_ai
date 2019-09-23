@@ -3,7 +3,7 @@ from time import sleep, time
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_D, SpeedPercent
 from ev3dev2.sensor import  INPUT_1, INPUT_2
 from ev3dev2.sensor.lego import ColorSensor 
-import linefollower
+from linefollower import LineFollower
 
 
 
@@ -20,13 +20,16 @@ print('its me..')
 
 refTime = time()
 currentTime = refTime
-runTime = 10
+runTime = 20
+
+lineFollower = LineFollower(rightMotor, leftMotor,0.25,0,2)
 
 print(currentTime-refTime)
 while(runTime>(currentTime-refTime)):
     colorIntens = colorSensorCenter.reflected_light_intensity
 
-    linefollower.follow(colorIntens, rightMotor, leftMotor)
+
+    lineFollower.follow(colorIntens)
     #inputstring = input()
 
     # if inputstring != '':
@@ -39,6 +42,7 @@ while(runTime>(currentTime-refTime)):
     
 
     currentTime=time()
+    
 
 rightMotor.duty_cycle_sp = 0
 leftMotor.duty_cycle_sp = 0
