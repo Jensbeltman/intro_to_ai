@@ -58,7 +58,7 @@ while(True):
     rightMotor.duty_cycle_sp = -(20+20*(rightWeight/100))
     leftMotor.duty_cycle_sp = -(20+20*(leftWeight/100))
 
-    if(crossDetected()==1)
+    if(crossDetected()==1):
         rightMotor.duty_cycle_sp=0
         leftMotor.duty_cycle_sp=0
         break
