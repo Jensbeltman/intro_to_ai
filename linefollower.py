@@ -1,30 +1,23 @@
 import time
+from params import *
+import math
 
 class LineFollower():
-    def __init__(self,rightMotor, leftMotor,P=1,I=0,D=0):
-        self.iMM = [0, 100]
-        self.iRange = 100
-        self.iTarget = 100/2
-        self.P = P
-        self.I = I
-        self.D = D
-        self.rightMotor = rightMotor
-        self.leftMotor = leftMotor
+    def __init__(self,mDiff):
+        self.mDiff = mDiff
         self.prevIDev = 0
-        self.prevTime = 1000000
-        
-    
+
     def follow(self,colorIntens):
-        iDev = (self.iTarget-colorIntens)/self.iRange
-        currentTime = time.time()*1000
-        iDevD= (self.prevIDev-iDev)/((currentTime-self.prevTime))
+        iDev = (iTarget-colorIntens)/(iRange/2)
+        iDevD= (self.prevIDev-iDev)/dt
         self.prevIDev = iDevD
-        self.prevTime = currentTime
 
-        rightWeight = iDev*self.P+iDevD*self.D
-        leftWeight =  -(iDev*self.P+iDevD*self.D)
-
-        self.rightMotor.duty_cycle_sp = -(50+rightWeight*100)
-        self.leftMotor.duty_cycle_sp = -(50+leftWeight*100)
+        rightWeight = -iDev*P
+        leftWeight =  iDev*P
         
-
+        if math.isfinite(rightWeight) and math.isfinite(leftWeight) :
+            self.mDiff.right_motor.duty_cycle_sp = (baseSpeed+rightWeight*(100-baseSpeed))
+            self.mDiff.left_motor.duty_cycle_sp = (baseSpeed+leftWeight*(100-baseSpeed))
+        else:
+            print("Dev not finite")
+    

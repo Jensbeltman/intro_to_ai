@@ -1,47 +1,85 @@
-print('hello')
+print('Initializing')
 from time import sleep, time
-from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_D, SpeedPercent
+from crossDetection import crossDetection
+from ev3dev2.motor import OUTPUT_A, OUTPUT_B, SpeedPercent, MoveDifferential, SpeedRPM
 from ev3dev2.sensor import  INPUT_1, INPUT_2, INPUT_3
 from ev3dev2.sensor.lego import ColorSensor, TouchSensor
+from ev3dev2.wheel import EV3Tire
 from linefollower import LineFollower
+from params import *
+from planner import Plan
 
-rightMotor = LargeMotor(OUTPUT_A)
-leftMotor = LargeMotor(OUTPUT_D)
-rightMotor.command = rightMotor.COMMAND_RUN_DIRECT
-leftMotor.command = leftMotor.COMMAND_RUN_DIRECT
+# Loading motor and sensor objects
+mDiff = MoveDifferential(OUTPUT_B, OUTPUT_A, EV3Tire, distBettwenWheels)
+mDiff.run_direct()
 colSFollower = ColorSensor(INPUT_1)
 colSCrossDetect = ColorSensor(INPUT_2)
 stopButton = TouchSensor(INPUT_3)
 
-stopButton = TouchSensor(INPUT_1)
-print(type(rightMotor),type(colorSensorCenter))
+# Initializing variables and behavior objects
+state = lineFollowing
+lineFollower = LineFollower(mDiff=mDiff)
 
-lineFollower = LineFollower(rightMotor, leftMotor,0.25,0,2)
-
-crossDetected = False
-turning = False
-pushing = False
-
-if __name__ == "__main_":
-    while True:
-        now = time.time()            # get the time
-        # Reading inputs
-        if stopButton.is_pressed(): break
+plan = Plan(planstring)
+plan.nextStep
+print('Initializing finished press button to start')
+while True:
+    # get the time
+    # now = time()    
+    # Handle stop button
+    if stopButton.is_pressed:
+        stopButton.wait_for_released()
+        mDiff.reset()
+        stopButton.wait_for_pressed()
+        mDiff.run_direct()
+        stopButton.wait_for_released()
+    else:
+        #Read inputs here
         icolSFollower = colSFollower.reflected_light_intensity
         icolSCrossDetect = colSCrossDetect.reflected_light_intensity
         #Cross detection
-        crossDetected = crossDetection(icolSFollower,icolSCrossDetect,10)
+        if crossDetection(icolSFollower,icolSCrossDetect,lineDetectThreshold):
+            print('crossDetection')
+            if plan.nextStep():
+                print("Next step is :"+str(plan.action))
+                if plan.action == 'l':
+                    state = turnLeft
+                if plan.action == 'r':
+                    state = turnRight
+                if plan.action == 's':
+                    mDiff.on_for_distance(baseSpeed,continueDist,brake=False)
+                    mDiff.run_direct()
+                    state = lineFollowing
+            else:
+                mDiff.reset()
+                print("plan done press stop button to reset")
+                stopButton.wait_for_pressed()
+                stopButton.wait_for_released()
+                from params import *
+                plan = Plan(planstring)
 
-        # Upcomming statemachine
-        if crossDetected: break
 
-        lineFollower.follow(colorIntens)
+        #Line following
+        if state == lineFollowing:
+             lineFollower.follow(icolSFollower)
 
-        elapsed = time.time() - now  # how long was it running?
-        time.sleep(0.1-elapsed)       # sleep accordingly so the full iteration takes 1 second
-        
+        #Turning
+        elif state == turnLeft:
+            mDiff.on_for_distance(turnSpeed,turnLeftDist,brake=False)
+            mDiff.turn_left(turnSpeed,turnDeg,brake=False)
+            mDiff.run_direct()
+            state=lineFollowing
+        elif state == turnRight:
+            mDiff.on_for_distance(turnSpeed,turnRightDist,brake=False)
+            mDiff.turn_right(turnSpeed,turnDeg,brake=False)
+            mDiff.run_direct()
+            state=lineFollowing
 
 
-        
 
-        
+    
+        # # manage timing 
+        # elapsed = time() - now # calculating time elapsed for current loop
+        # # if elapsed>dt:
+        # # print(str(elapsed)+" seconds elapsed")
+        # sleep(max([0,dt-elapsed])) # sleep accordingly so the full iteration takes 1 second
