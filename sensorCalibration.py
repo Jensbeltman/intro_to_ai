@@ -3,6 +3,7 @@ from ev3dev2.motor import OUTPUT_A, OUTPUT_B, SpeedPercent, MoveDifferential, Sp
 from ev3dev2.sensor import  INPUT_1, INPUT_2, INPUT_3
 from ev3dev2.sensor.lego import ColorSensor, TouchSensor
 from ev3dev2.wheel import EV3Tire
+from time import time
 
 
 
@@ -22,10 +23,11 @@ while(True):
     sensorValues = []
 
     mDiff.turn_left(5,360,block=False)
+    t = time()
     while mDiff.is_running:
         sensorValues.append(colSFollower.reflected_light_intensity)
     mDiff.wait_until_not_moving()
-
+    print("Run time",time()-t)
 
     maxVal = max(sensorValues)
     minVal = min(sensorValues)
