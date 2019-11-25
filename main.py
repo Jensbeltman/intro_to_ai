@@ -8,6 +8,7 @@ from ev3dev2.wheel import EV3Tire
 from params import *
 from planner import Plan
 from robot import Robot
+from CanPush import *
 
 # Loading motor and sensor objects
 # MoveDifferential(left_motor_port, right_motor_port, wheel_class, wheel_distance_mm)
@@ -31,6 +32,13 @@ while True:
     # get the time
     # now = time()    
     # Handle stop button
+
+    ##### !!!!!------ START  --- TEST canPush ----------!!!!!
+    robot.readColS()
+    canPush(robot)
+    break
+    ##### !!!!!------ END  --- TEST canPush ----------!!!!!
+
     if stopButton.is_pressed:
         stopButton.wait_for_released()
         robot.stop()
@@ -103,6 +111,7 @@ while True:
             robot.readColS()
             state=lineFollowing
 
+        elif state == canPush:
 
 
 
