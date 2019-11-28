@@ -80,9 +80,11 @@ class Robot():
         return self.leftMotor.position
 
     def crossDetection(self,lightValue = 10):
-
-        if((self.IcolSCrossDetect<=lightValue) and (self.IcolSFollower<=lightValue)):
+        (li,ri) = self.readColS()
+        
+        if((self.IcolSCrossDetect<=lineUpper) and (self.IcolSFollower<=lineUpper)):
             retrunValue=True
+            print(li,ri)
         else:
             retrunValue=False
 
@@ -102,12 +104,12 @@ class Robot():
         self.Pos = self.getPosition()
         #print(self.Pos)
 
-        while self.Pos < (lineLenght_WheelPos-100):
-            print(self.Pos)
+        while self.Pos < (lineLenght_WheelPos-120):
+            #print(self.Pos)
             self.Pos = self.getPosition()    
             self.follow()
             self.readColS()
-            if self.crossDetection(intersectionDetectThreshold):
+            if self.crossDetection(lineLower):
                 crossValue = self.getPosition()
                 break
         '''
@@ -125,26 +127,27 @@ class Robot():
             self.runStraight(-50)
             self.readColS()
             
-            if self.crossDetection(intersectionDetectThreshold):
+            if self.crossDetection(lineLower):
                 self.stop()
                 break
 
 
         # Step 4
+        '''
         while self.Pos >= 0:
             
             self.Pos = self.getPosition()
             self.runStraight(-50)
-            '''
+            
             if self.Pos <= 0:
                 self.stop()
                 break
-            '''
+            
             self.readColS()
-            if self.crossDetection(intersectionDetectThreshold):
+            if self.crossDetection(lineLower):
                 self.stop()
                 break
-
+        '''
     
 
         self.stop()

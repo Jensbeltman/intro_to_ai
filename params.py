@@ -2,14 +2,14 @@
 distBettwenWheels = 90#mm
 baseSpeed = 60
 iTarget=34
-iRange=58
-planstring="ffrllllfrrflu"
-
+iRange=59
+#planstring="pffrllllfrrflu"
+planstring="frllprllplrrp"
 #States
 lineFollowing = 1
 turnRight = 2
 turnLeft = 3
-pushing = 4
+canPush = 4
 continueForward = 5
 uTurn = 6
 idle = 10
@@ -21,8 +21,9 @@ D = 0.0
 dt = 0.05
 
 #Crossdetection
-intersectionDetectThreshold = 35
-lineDetectThreshold = 25
+
+lineUpper = iTarget
+lineLower = 12
 continueDist = 15
 whiteThreshold = 50
 

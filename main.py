@@ -39,8 +39,8 @@ while True:
 
     ##### !!!!!------ START  --- TEST canPush ----------!!!!!
     #robot.readColS()
-    robot.canPushed()
-    break
+    #robot.canPushed()
+    #break
     ##### !!!!!------ END  --- TEST canPush ----------!!!!!
 
     if stopButton.is_pressed:
@@ -54,7 +54,7 @@ while True:
         #Cross detection
         robot.readColS()
         # !!!!!!!------ The crossDetection is changed! --- Have added robot. in front------!!!!!!
-        if robot.crossDetection(robot.IcolSFollower,robot.IcolSCrossDetect,intersectionDetectThreshold):
+        if robot.crossDetection(lineLower) or state == idle:
             print('crossDetection')
             if plan.nextStep():
                 print("Next step is :"+str(plan.action))
@@ -68,6 +68,8 @@ while True:
                     state = lineFollowing
                 if plan.action == 'b':
                     state = uTurn
+                if plan.action == 'p':
+                    state = canPush
             else:
                 robot.stop()
                 print("plan done press stop button to reset")
@@ -101,23 +103,29 @@ while True:
         elif state == turnLeft:
             robot.runStraight(baseSpeed)
             robot.waitForRotation(0.4,brake=False)
-            robot.rotateLeft(baseSpeed)
-            robot.waitForColValue(robot.colSCrossDetect,lineDetectThreshold,ge=True,brake=False)
-            robot.waitForColValue(robot.colSCrossDetect,lineDetectThreshold,ge=False,brake=True)
+            robot.rotateLeft(baseSpeed/2)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=True,brake=False)
+            robot.rotateRight(baseSpeed/2)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
+
             robot.readColS()
             state=lineFollowing
 
         elif state == turnRight:
             robot.runStraight(baseSpeed)
-            robot.waitForRotation(0.4,brake=False)
-            robot.rotateRight(baseSpeed)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=False,brake=True)
+            robot.waitForRotation(0.5,brake=False)
+            robot.rotateRight(baseSpeed/2)
+            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
             robot.readColS()
             state=lineFollowing
 
         elif state == canPush:
-            pass
+            robot.canPushed()
+            state = idle
 
 
 
