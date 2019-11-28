@@ -1,8 +1,8 @@
 #Gloabal
 distBettwenWheels = 90#mm
 baseSpeed = 60
-iTarget=34
-iRange=58
+iTarget=33
+iRange=56
 planstring="ffrllllfrrflu"
 
 #States
@@ -34,3 +34,4 @@ turnLeftDist = 95
 sleepTime = 1.0
 pos = 0
 
+lineLenght_WheelPos=567

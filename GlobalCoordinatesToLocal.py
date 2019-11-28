@@ -10,7 +10,6 @@
 #E = East
 #S = South 
 
-
 #RobNosePoint <-This is the start condition - assumed that the robot will point up at the begining - can be changed in the future
 # 
 def GlobalCoordinatesToLocal(GlobalCoordinateInput):

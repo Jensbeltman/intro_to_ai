@@ -1,4 +1,5 @@
 from params import *
+#from crossDetection *
 
 class Robot():
     def __init__(self,left_motor,right_motor,colSFollower,colSCrossDetect,dc):
@@ -11,6 +12,8 @@ class Robot():
         self.IcolSCrossDetect = colSCrossDetect.reflected_light_intensity
         # Line following
         self.prevIDev = 0
+        # For wheel
+        self.Pos = 0
 
 
     def readColS(self):
@@ -72,5 +75,78 @@ class Robot():
     def resetPosition(self):
         self.leftMotor.position = 0
         self.rightMotor.position = 0
+
+    def getPosition(self):
+        return self.leftMotor.position
+
+    def crossDetection(self,lightValue = 10):
+
+        if((self.IcolSCrossDetect<=lightValue) and (self.IcolSFollower<=lightValue)):
+            retrunValue=True
+        else:
+            retrunValue=False
+
+        return retrunValue
+
+
+    def canPushed(self):
+
+        crossValue = 0
+
+        self.runStraight(baseSpeed)
+        self.waitForRotation(0.15)
+        # Step 1
+        self.resetPosition()
+        
+        # Step 2
+        self.Pos = self.getPosition()
+        #print(self.Pos)
+
+        while self.Pos < (lineLenght_WheelPos-100):
+            print(self.Pos)
+            self.Pos = self.getPosition()    
+            self.follow()
+            self.readColS()
+            if self.crossDetection(intersectionDetectThreshold):
+                crossValue = self.getPosition()
+                break
+        '''
+        print(crossValue)
+        print(crossValue)
+        print(crossValue)
+        '''
+        # Step 3
+        #self.stop()
+        
+
+
+         # Step 5
+        while True:
+            self.runStraight(-50)
+            self.readColS()
+            
+            if self.crossDetection(intersectionDetectThreshold):
+                self.stop()
+                break
+
+
+        # Step 4
+        while self.Pos >= 0:
+            
+            self.Pos = self.getPosition()
+            self.runStraight(-50)
+            '''
+            if self.Pos <= 0:
+                self.stop()
+                break
+            '''
+            self.readColS()
+            if self.crossDetection(intersectionDetectThreshold):
+                self.stop()
+                break
+
+    
+
+        self.stop()
 
 
