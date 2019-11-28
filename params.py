@@ -4,8 +4,7 @@ baseSpeed = 60
 iTarget=34
 iRange=59
 #planstring="pffrllllfrrflu"
-#
-planstring="frllprllplrrp"
+planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
 
 #States
 lineFollowing = 1

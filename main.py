@@ -44,10 +44,24 @@ while True:
     ##### !!!!!------ END  --- TEST canPush ----------!!!!!
 
     if stopButton.is_pressed:
-        stopButton.wait_for_released()
-        robot.stop()
-        stopButton.wait_for_pressed()
-        stopButton.wait_for_released()
+        stopButton.wait_for_released(timeout_ms=3000)
+        if not stopButton.is_released:
+            stopButton.wait_for_released()
+            robot.stop()
+            print("plan reset press stop button to reset")
+            stopButton.wait_for_pressed()
+            stopButton.wait_for_released()
+            robot.bufferFollower = [50 for i in range(10)]
+            robot.bufferCrossDetect = [50 for i in range(10)]
+            state = lineFollowing
+            plan = Plan(planstring)
+
+        else:
+            robot.stop()
+            stopButton.wait_for_pressed()
+            stopButton.wait_for_released()
+            robot.bufferFollower = [50 for i in range(10)]
+            robot.bufferCrossDetect = [50 for i in range(10)]
     else:
         #Read inputs here
    
@@ -85,18 +99,14 @@ while True:
             robot.follow()
         elif state == uTurn:
             robot.runStraight(baseSpeed)
-            robot.waitForRotation(0.75)
-            robot.rotateRight(baseSpeed*1.5)
-            sleep(0.5)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=False,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=False,brake=False)
-            
-            robot.rotateLeft(baseSpeed/2)
-            robot.waitForColValue(robot.colSFollower,lineDetectThreshold,ge=False,brake=False)
-
-            robot.follow()
-            state = lineFollowing
+            robot.waitForRotation(0.5,brake=False)
+            robot.rotateRight(baseSpeed/2)
+            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
+            robot.readColS()
+            state=lineFollowing
     
 
         #Turning

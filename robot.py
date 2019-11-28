@@ -10,6 +10,9 @@ class Robot():
         self.colSCrossDetect = colSCrossDetect
         self.IcolSFollower = colSFollower.reflected_light_intensity
         self.IcolSCrossDetect = colSCrossDetect.reflected_light_intensity
+        self.bufferFollower = [50 for i in range(10)]
+        self.bufferCrossDetect = [50 for i in range(10)]
+        self.bufferIdx = 0
         # Line following
         self.prevIDev = 0
         # For wheel
@@ -19,6 +22,11 @@ class Robot():
     def readColS(self):
         self.IcolSFollower = self.colSFollower.reflected_light_intensity
         self.IcolSCrossDetect = self.colSCrossDetect.reflected_light_intensity
+        self.bufferFollower[self.bufferIdx] = self.IcolSFollower 
+        self.bufferCrossDetect[self.bufferIdx] = self.IcolSCrossDetect 
+
+        self.bufferIdx = (self.bufferIdx+1)%10
+
         return (self.IcolSCrossDetect,self.IcolSFollower)
 
     def stop(self):
@@ -81,10 +89,14 @@ class Robot():
 
     def crossDetection(self,lightValue = 10):
         (li,ri) = self.readColS()
+        minFollower = min(self.bufferFollower)
+        minCrossDetect = min(self.bufferCrossDetect)
         
-        if((self.IcolSCrossDetect<=lineUpper) and (self.IcolSFollower<=lineUpper)):
+        if((minFollower<=lineLower) and (minCrossDetect<=lineLower)):
             retrunValue=True
-            print(li,ri)
+            print(minFollower,minCrossDetect)
+            self.bufferFollower = [50 for i in range(10)]
+            self.bufferCrossDetect = [50 for i in range(10)]
         else:
             retrunValue=False
 
