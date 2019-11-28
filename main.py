@@ -8,7 +8,7 @@ from ev3dev2.wheel import EV3Tire
 from params import *
 from planner import Plan
 from robot import Robot
-from CanPush import *
+
 
 # Loading motor and sensor objects
 # MoveDifferential(left_motor_port, right_motor_port, wheel_class, wheel_distance_mm)
@@ -33,9 +33,13 @@ while True:
     # now = time()    
     # Handle stop button
 
+
+    #robot.stop()
+    #break
+
     ##### !!!!!------ START  --- TEST canPush ----------!!!!!
-    robot.readColS()
-    canPush(robot)
+    #robot.readColS()
+    robot.canPushed()
     break
     ##### !!!!!------ END  --- TEST canPush ----------!!!!!
 
@@ -49,7 +53,8 @@ while True:
    
         #Cross detection
         robot.readColS()
-        if crossDetection(robot.IcolSFollower,robot.IcolSCrossDetect,intersectionDetectThreshold):
+        # !!!!!!!------ The crossDetection is changed! --- Have added robot. in front------!!!!!!
+        if robot.crossDetection(robot.IcolSFollower,robot.IcolSCrossDetect,intersectionDetectThreshold):
             print('crossDetection')
             if plan.nextStep():
                 print("Next step is :"+str(plan.action))
@@ -112,6 +117,7 @@ while True:
             state=lineFollowing
 
         elif state == canPush:
+            pass
 
 
 
