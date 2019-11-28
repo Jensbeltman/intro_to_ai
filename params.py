@@ -3,8 +3,8 @@ distBettwenWheels = 90#mm
 baseSpeed = 60
 iTarget=34
 iRange=59
-#planstring="pffrllllfrrflu"
-planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
+planstring="rrrrrrrrrrrrbllllllllllll" # For testing the turning
+#planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
 
 #States
 lineFollowing = 1
@@ -24,7 +24,9 @@ dt = 0.05
 #Crossdetection
 
 lineUpper = iTarget
-lineLower = 12
+lineLower = iTarget-(iRange/4)
+#lineLower = 12
+lineMiddle = iTarget-(iRange/4)
 continueDist = 15
 whiteThreshold = 50
 
