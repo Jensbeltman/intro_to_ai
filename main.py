@@ -9,6 +9,7 @@ from params import *
 from planner import Plan
 from robot import Robot
 
+
 # Loading motor and sensor objects
 # MoveDifferential(left_motor_port, right_motor_port, wheel_class, wheel_distance_mm)
 leftMotor = LargeMotor(OUTPUT_B)
@@ -31,6 +32,17 @@ while True:
     # get the time
     # now = time()    
     # Handle stop button
+
+
+    #robot.stop()
+    #break
+
+    ##### !!!!!------ START  --- TEST canPush ----------!!!!!
+    #robot.readColS()
+    robot.canPushed()
+    break
+    ##### !!!!!------ END  --- TEST canPush ----------!!!!!
+
     if stopButton.is_pressed:
         stopButton.wait_for_released()
         robot.stop()
@@ -41,7 +53,8 @@ while True:
    
         #Cross detection
         robot.readColS()
-        if crossDetection(robot.IcolSFollower,robot.IcolSCrossDetect,intersectionDetectThreshold):
+        # !!!!!!!------ The crossDetection is changed! --- Have added robot. in front------!!!!!!
+        if robot.crossDetection(robot.IcolSFollower,robot.IcolSCrossDetect,intersectionDetectThreshold):
             print('crossDetection')
             if plan.nextStep():
                 print("Next step is :"+str(plan.action))
@@ -103,6 +116,8 @@ while True:
             robot.readColS()
             state=lineFollowing
 
+        elif state == canPush:
+            pass
 
 
 
