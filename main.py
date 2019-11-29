@@ -29,20 +29,6 @@ plan = Plan(planstring)
 plan.nextStep
 print('Initializing finished')
 while True:
-    # get the time
-    # now = time()    
-    # Handle stop button
-
-
-    #robot.stop()
-    #break
-
-    ##### !!!!!------ START  --- TEST canPush ----------!!!!!
-    #robot.readColS()
-    #robot.canPushed()
-    #break
-    ##### !!!!!------ END  --- TEST canPush ----------!!!!!
-
     if stopButton.is_pressed:
         stopButton.wait_for_released(timeout_ms=3000)
         if not stopButton.is_released:
@@ -51,8 +37,8 @@ while True:
             print("plan reset press stop button to reset")
             stopButton.wait_for_pressed()
             stopButton.wait_for_released()
-            robot.bufferFollower = [50 for i in range(10)]
-            robot.bufferCrossDetect = [50 for i in range(10)]
+            
+            
             state = lineFollowing
             plan = Plan(planstring)
 
@@ -60,18 +46,20 @@ while True:
             robot.stop()
             stopButton.wait_for_pressed()
             stopButton.wait_for_released()
-            robot.bufferFollower = [50 for i in range(10)]
-            robot.bufferCrossDetect = [50 for i in range(10)]
+            
+            
     else:
         #Read inputs here
    
         #Cross detection
-        robot.readColS()
+        
         # !!!!!!!------ The crossDetection is changed! --- Have added robot. in front------!!!!!!
-        if robot.crossDetection(lineLower) or state == idle:
-            print('crossDetection')
+        if robot.crossDetection() or state == idle:       
+            robot.follow()  
+            #print('crossDetection')
             if plan.nextStep():
-                print("Next step is :"+str(plan.action))
+                
+               # print("Next step is :"+str(plan.action))
                 if plan.action == 'l':
                     state = turnLeft
                 if plan.action == 'r':
@@ -84,6 +72,7 @@ while True:
                     state = uTurn
                 if plan.action == 'p':
                     state = canPush
+                
             else:
                 robot.stop()
                 print("plan done press stop button to reset")
@@ -101,47 +90,41 @@ while True:
             robot.runStraight(baseSpeed)
             robot.waitForRotation(0.5,brake=False)
             robot.rotateRight(baseSpeed/2)
-            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.8,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.6,ge=False,brake=False)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.8,ge=True,brake=False)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.6,ge=False,brake=True)
             robot.readColS()
+            # 
             state=lineFollowing
     
 
         #Turning
         elif state == turnLeft:
             robot.runStraight(baseSpeed)
-            robot.waitForRotation(0.4,brake=False)
+            robot.waitForRotation(0.5,brake=False)
+            robot.rotateLeft(baseSpeed)
+            robot.waitForRotation(0.35,brake=False)
             robot.rotateLeft(baseSpeed/2)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=True,brake=False)
-            robot.rotateRight(baseSpeed/2)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.6,ge=False,brake=False)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.8,ge=True,brake=False)
+            robot.rotateRight(baseSpeed/3)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.4,ge=False,brake=True)
 
-            robot.readColS()
+            robot.readColS()          
             state=lineFollowing
 
         elif state == turnRight:
             robot.runStraight(baseSpeed)
-            robot.waitForRotation(0.5,brake=False)
+            robot.waitForRotation(0.55,brake=False)
+            robot.rotateRight(baseSpeed)
+            robot.waitForRotation(0.35,brake=False)
             robot.rotateRight(baseSpeed/2)
-            robot.waitForColValue(robot.colSFollower,lineUpper,ge=True,brake=False)
-            robot.waitForColValue(robot.colSFollower,lineLower,ge=False,brake=True)
+            robot.waitForColValue(robot.colSFollower,robot.threshold*0.6,ge=False,brake=True)
             robot.readColS()
+            # 
             state=lineFollowing
 
         elif state == canPush:
             robot.canPushed()
             state = idle
-
-
-
-    
-        # # manage timing 
-        # elapsed = time() - now # calculating time elapsed for current loop
-        # # if elapsed>dt:
-        # # print(str(elapsed)+" seconds elapsed")
-        # sleep(max([0,dt-elapsed])) # sleep accordingly so the full iteration takes 1 second

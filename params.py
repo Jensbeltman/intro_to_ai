@@ -1,10 +1,10 @@
 #Gloabal
 distBettwenWheels = 90#mm
 baseSpeed = 60
-iTarget=34
-iRange=59
-planstring="rrrrrrrrrrrrbllllllllllll" # For testing the turning
-#planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
+iTarget=32
+iRange=64
+#planstring="rrrrrrrrrrrrbllllllllllllbrrrrrrrrrrrrbllllllllllll" # For testing the turning
+planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
 
 #States
 lineFollowing = 1
@@ -29,6 +29,7 @@ lineLower = iTarget-(iRange/4)
 lineMiddle = iTarget-(iRange/4)
 continueDist = 15
 whiteThreshold = 50
+avrWindow = 20
 
 #Turning
 turnSpeed = 30

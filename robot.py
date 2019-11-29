@@ -1,4 +1,5 @@
 from params import *
+import math
 #from crossDetection *
 
 class Robot():
@@ -10,9 +11,11 @@ class Robot():
         self.colSCrossDetect = colSCrossDetect
         self.IcolSFollower = colSFollower.reflected_light_intensity
         self.IcolSCrossDetect = colSCrossDetect.reflected_light_intensity
-        self.bufferFollower = [50 for i in range(10)]
-        self.bufferCrossDetect = [50 for i in range(10)]
+        # self.bufferFollower = [50 for i in range(avrWindow)]
+        self.bufferCrossDetect = [iRange/4 for i in range(avrWindow)]
         self.bufferIdx = 0
+        self.crossDetected = False
+        self.threshold = iRange/4
         # Line following
         self.prevIDev = 0
         # For wheel
@@ -22,10 +25,10 @@ class Robot():
     def readColS(self):
         self.IcolSFollower = self.colSFollower.reflected_light_intensity
         self.IcolSCrossDetect = self.colSCrossDetect.reflected_light_intensity
-        self.bufferFollower[self.bufferIdx] = self.IcolSFollower 
-        self.bufferCrossDetect[self.bufferIdx] = self.IcolSCrossDetect 
+        # self.bufferFollower[self.bufferIdx] = self.IcolSFollower 
+        # self.bufferCrossDetect[self.bufferIdx] = self.IcolSCrossDetect 
 
-        self.bufferIdx = (self.bufferIdx+1)%10
+        # self.bufferIdx = (self.bufferIdx+1)%10
 
         return (self.IcolSCrossDetect,self.IcolSFollower)
 
@@ -34,8 +37,13 @@ class Robot():
         self.leftMotor.duty_cycle_sp = 0   
 
     def follow(self):
-        colorIntens = self.readColS()[1]
-        iDev = (iTarget-colorIntens)/(iRange/2)
+        self.readColS()
+        self.bufferCrossDetect[self.bufferIdx] = self.IcolSCrossDetect 
+        self.bufferIdx = (self.bufferIdx+1)%avrWindow
+        self.threshold = sum(self.bufferCrossDetect)/float(avrWindow)
+        
+
+        iDev = (iTarget-self.IcolSFollower)/(iRange/2)
 
         rightWeight = -iDev*P
         leftWeight =  iDev*P
@@ -65,9 +73,14 @@ class Robot():
         if brake:
             self.stop()
 
-    
+    def resetBuffer(self):
+        pass
+        # self.bufferFollower = [50 for i in range(avrWindow)]
+        # self.bufferCrossDetect = [50 for i in range(avrWindow)]
 
     def setDC(self,lDC,rDC):
+        self.rightMotor.duty_cycle_sp = rDC
+        self.leftMotor.duty_cycle_sp = lDC
         self.rightMotor.duty_cycle_sp = rDC
         self.leftMotor.duty_cycle_sp = lDC
 
@@ -76,6 +89,7 @@ class Robot():
 
     def rotateLeft(self,dc):
         self.setDC(-dc,dc)
+        
 
     def runStraight(self,DC):
         self.setDC(DC,DC)
@@ -87,20 +101,8 @@ class Robot():
     def getPosition(self):
         return self.leftMotor.position
 
-    def crossDetection(self,lightValue = 10):
-        (li,ri) = self.readColS()
-        minFollower = min(self.bufferFollower)
-        minCrossDetect = min(self.bufferCrossDetect)
-        
-        if((minFollower<=lineLower) and (minCrossDetect<=lineLower)):
-            retrunValue=True
-            print(minFollower,minCrossDetect)
-            self.bufferFollower = [50 for i in range(10)]
-            self.bufferCrossDetect = [50 for i in range(10)]
-        else:
-            retrunValue=False
-
-        return retrunValue
+    def crossDetection(self):
+        return (self.IcolSCrossDetect<=(0.8*self.threshold))
 
 
     def canPushed(self):
@@ -116,14 +118,10 @@ class Robot():
         self.Pos = self.getPosition()
         #print(self.Pos)
 
-        while self.Pos < (lineLenght_WheelPos-120):
+        while self.Pos < (lineLenght_WheelPos-180):
             #print(self.Pos)
             self.Pos = self.getPosition()    
             self.follow()
-            self.readColS()
-            if self.crossDetection(lineLower):
-                crossValue = self.getPosition()
-                break
         '''
         print(crossValue)
         print(crossValue)
@@ -137,9 +135,8 @@ class Robot():
          # Step 5
         while True:
             self.runStraight(-50)
-            self.readColS()
-            
-            if self.crossDetection(lineLower):
+            self.readColS()    
+            if self.crossDetection():
                 self.stop()
                 break
 
@@ -156,7 +153,7 @@ class Robot():
                 break
             
             self.readColS()
-            if self.crossDetection(lineLower):
+            if self.crossDetection():
                 self.stop()
                 break
         '''

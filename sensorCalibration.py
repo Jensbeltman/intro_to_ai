@@ -14,10 +14,8 @@ stopButton = TouchSensor(INPUT_3)
 print('Initializing finished')
 
 while(True):
-    stopButton.wait_for_pressed()
-    stopButton.wait_for_released()
-    wD = int(input('Type in distance between the wheels in mm'))
-    mDiff = MoveDifferential(OUTPUT_B, OUTPUT_A, EV3Tire, wD)
+
+    mDiff = MoveDifferential(OUTPUT_B, OUTPUT_A, EV3Tire, 90)
 
 
     sensorValues = []
@@ -36,6 +34,24 @@ while(True):
     print('nrVal','maxVal','minVal','midVal','meanVal')
     print(len(sensorValues),maxVal,minVal,midVal,meanVal)
     #print(sensorValues)
+
+    sensorValues = []
+    mDiff.turn_left(5,360,block=False)
+
+    t = time()
+    while mDiff.is_running:
+        sensorValues.append(colSCrossDetect.reflected_light_intensity)
+    mDiff.wait_until_not_moving()
+    print("Run time",time()-t)
+
+    maxVal = max(sensorValues)
+    minVal = min(sensorValues)
+    midVal = minVal+(maxVal-minVal)/2
+    meanVal = sum(sensorValues)/len(sensorValues)
+    print('nrVal','maxVal','minVal','midVal','meanVal')
+    print(len(sensorValues),maxVal,minVal,midVal,meanVal)
+    #print(sensorValues)
+
 
     stopButton.wait_for_pressed()
     stopButton.wait_for_released()
