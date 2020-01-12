@@ -20,7 +20,9 @@ class Robot():
         self.prevIDev = 0
         # For wheel
         self.Pos = 0
-
+        #This is for get the data
+        self.colSaveArray = []
+        self.timeSaveArray = []
 
     def readColS(self):
         self.IcolSFollower = self.colSFollower.reflected_light_intensity
@@ -29,6 +31,8 @@ class Robot():
         # self.bufferCrossDetect[self.bufferIdx] = self.IcolSCrossDetect 
 
         # self.bufferIdx = (self.bufferIdx+1)%10
+
+        self.colSaveArray.append(self.IcolSFollower)
 
         return (self.IcolSCrossDetect,self.IcolSFollower)
 
