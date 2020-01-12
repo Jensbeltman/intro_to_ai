@@ -2,7 +2,7 @@ print('Initializing')
 from time import sleep, time
 from crossDetection import crossDetection
 from ev3dev2.motor import OUTPUT_A, OUTPUT_B, SpeedPercent, LargeMotor, SpeedRPM
-from ev3dev2.sensor import  INPUT_1, INPUT_2, INPUT_3
+from ev3dev2.sensor import  INPUT_4, INPUT_2, INPUT_3
 from ev3dev2.sensor.lego import ColorSensor, TouchSensor
 from ev3dev2.wheel import EV3Tire
 from params import *
@@ -17,16 +17,21 @@ rightMotor = LargeMotor(OUTPUT_A)
 leftMotor.command = leftMotor.COMMAND_RUN_DIRECT
 rightMotor.command = rightMotor.COMMAND_RUN_DIRECT
 
-colSFollower = ColorSensor(INPUT_1)
+colSFollower = ColorSensor(INPUT_4)
 colSCrossDetect = ColorSensor(INPUT_2)
 stopButton = TouchSensor(INPUT_3)
 
 robot = Robot(leftMotor,rightMotor,colSFollower,colSCrossDetect,baseSpeed)
 
+
+move_times = {'f' : [],'b' : [],'l' : [],'r' : [],'p' :[]}
+action = None
+t = 0.0
+
 # Initializing variables and behavior objects
 state = lineFollowing
 plan = Plan(planstring)
-plan.nextStep
+
 print('Initializing finished')
 while True:
     if stopButton.is_pressed:
@@ -57,8 +62,12 @@ while True:
         if robot.crossDetection() or state == idle:       
             robot.follow()  
             #print('crossDetection')
+            action=plan.action
             if plan.nextStep():
-                
+                if action != None:
+                    print(action)
+                    move_times[action].append(time()-t)
+                t = time()
                # print("Next step is :"+str(plan.action))
                 if plan.action == 'l':
                     state = turnLeft
@@ -74,6 +83,7 @@ while True:
                     state = canPush
                 
             else:
+                print(move_times)
                 robot.stop()
                 print("plan done press stop button to reset")
                 stopButton.wait_for_pressed()
