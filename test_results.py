@@ -16,3 +16,14 @@ for a in planstring:
     total_time += means[a]
 print("total time",total_time/60.0)
 
+
+
+
+
+
+
+
+
+
+
+

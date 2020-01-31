@@ -116,10 +116,7 @@ def getMove(state):
 competitionMap = 'llllUddlluRRRRRdrUUruulldRRdldlluLuulldRurDDullDRdRRRdrUUruurrdLulDulldRddlllluurDldRRRdrUUdlllldlluRRRRRdrU'
 competitionMapOld = ''
 
-if __name__ == "__main__":
-    
-    globalMap = 'llllUddlluRRRRRdrUUruulldRRdldlluLuulldRurDDullDRdRRRdrUUruurrdLulDulldRddlllluurDldRRRdrUUdlllldlluRRRRRdrU'
-    
+def globalToLocal(globalMap):
     localMap =''
     globalD = 'u'
 
@@ -167,8 +164,12 @@ if __name__ == "__main__":
                     localMap+= 'f'
                 localMap+='p'
 
-    print(globalMap)
-    print(localMap)
+    #print(globalMap)
+    return localMap
 
+if __name__ == "__main__":
+    
+    globalMap = 'llllUddlluRRRRRdrUUruulldRRdldlluLuulldRurDDullDRdRRRdrUUruurrdLulDulldRddlllluurDldRRRdrUUdlllldlluRRRRRdrU'
+    print(globalToLocal(globalMap))
 
 
