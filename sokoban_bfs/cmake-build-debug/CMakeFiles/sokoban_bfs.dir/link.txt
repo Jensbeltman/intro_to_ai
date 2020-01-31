@@ -1,0 +1,1 @@
+/usr/bin/c++  -g  -rdynamic CMakeFiles/sokoban_bfs.dir/main.cpp.o  -o sokoban_bfs 

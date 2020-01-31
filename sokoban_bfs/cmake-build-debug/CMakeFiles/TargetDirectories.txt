@@ -1,0 +1,3 @@
+/home/jens/AI/sokoban_bfs/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/jens/AI/sokoban_bfs/cmake-build-debug/CMakeFiles/sokoban_bfs.dir
+/home/jens/AI/sokoban_bfs/cmake-build-debug/CMakeFiles/edit_cache.dir

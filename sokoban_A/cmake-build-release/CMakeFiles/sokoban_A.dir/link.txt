@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG  -rdynamic CMakeFiles/sokoban_A.dir/main.cpp.o  -o sokoban_A 

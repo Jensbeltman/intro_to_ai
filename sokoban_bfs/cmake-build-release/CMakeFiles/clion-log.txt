@@ -1,0 +1,4 @@
+/opt/clion-2019.3.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - Unix Makefiles" /home/jens/AI/sokoban_bfs
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/jens/AI/sokoban_bfs/cmake-build-release
