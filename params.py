@@ -1,10 +1,13 @@
 #Gloabal
 distBettwenWheels = 90#mm
-baseSpeed = 60
+baseSpeed = 100
 iTarget=32
 iRange=64
 #planstring="rrrrrrrrrrrrbllllllllllllbrrrrrrrrrrrrbllllllllllll" # For testing the turning
-planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
+#planstring="lfffrpbfrfrrffffprllfprlflfllfprrlrfrlprflfllplrrfpblflplprlffprllfprlfrfrrprllpblfllprfrfffrfrrprllffprllfpbrffflrfrrffffprllp"
+
+
+planstring="f"
 
 #States
 lineFollowing = 1
